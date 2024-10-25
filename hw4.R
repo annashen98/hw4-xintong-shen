@@ -55,7 +55,10 @@ mapmerge%>%
 mapmerge <- mapmerge%>%
   mutate(dif = gii_2019-gii_2010)
 
+#push to github
+library(usethis)
 
+#type "use_github()" in console area
 
 
 
