@@ -60,39 +60,48 @@ library(usethis)
 
 #type "use_github()" in console area
 
+#lable the differences
+mapmerge_above_below <- mapmerge %>%
+  #na.omit() %>%
+  mutate(above_below = case_when(dif<0 ~ "below",
+                                 dif>0 ~ "above",
+                                 dif==0 ~ "equal"
+  ))
 
+#check if there are some null in 'above_below' column
+sum(is.na(mapmerge_above_below$above_below))
 
+#make a map using tmap
+tm_shape(mapmerge_above_below) + 
+  tm_polygons("above_below", 
+              # style="pretty",
+              palette="Greens",
+              midpoint=NA,
+              #title="Number of years",
+              alpha = 0.5) + 
+  tm_compass(position = c("left", "bottom"),type = "arrow") + 
+  tm_scale_bar(position = c("left", "bottom")) +
+  tm_layout(title = "GII difference between 2010 and 2019", 
+            legend.position = c("right", "bottom"),
+            legend.outside = TRUE)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#make a map using ggplot2
+ggplot(data = mapmerge_above_below) +
+  geom_sf(aes(fill = above_below)) +
+  scale_fill_manual(
+    values = c("above" = "red", "below" = "blue", "NA" = "grey"),
+    na.value = "grey",
+    name = "GII Difference between 2010 and 2019",
+    labels = c("Above" = "Above", "Below" = "Below", "NA" = "No Data")
+  ) +
+  labs(title = "GII in 2019 Above/Below 2010") +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
+    legend.position = "bottom",  # 图例在底部
+    legend.justification = "center",  # 图例居中
+    legend.box.margin = margin(10, 10, 10, 10)  # 增加图例与图框的距离
+  )
 
 
 
